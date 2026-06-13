@@ -1,67 +1,198 @@
-A<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Temp Check</title>
+
+<!-- iOS home screen PWA -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Temp Check">
+
+<!-- Home screen icon (generated inline as canvas → base64) -->
 <link rel="apple-touch-icon" id="appicon">
+
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: #0f172a; color: #f1f5f9; font-family: -apple-system, system-ui, sans-serif; min-height: 100vh; padding-bottom: env(safe-area-inset-bottom, 20px); }
-input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+body {
+background: #0f172a;
+color: #f1f5f9;
+font-family: -apple-system, system-ui, sans-serif;
+min-height: 100vh;
+padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
 input { -webkit-appearance: none; appearance: none; }
 button { -webkit-tap-highlight-color: transparent; }
+
 #app { max-width: 680px; margin: 0 auto; }
-.header { background: #1e293b; border-bottom: 1px solid #334155; padding: 14px 20px; padding-top: calc(14px + env(safe-area-inset-top, 0px)); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+
+/* Header */
+.header {
+background: #1e293b;
+border-bottom: 1px solid #334155;
+padding: 14px 20px;
+padding-top: calc(14px + env(safe-area-inset-top, 0px));
+display: flex;
+align-items: center;
+justify-content: space-between;
+position: sticky;
+top: 0;
+z-index: 10;
+}
 .header-title { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; }
 .header-sub { font-size: 12px; color: #94a3b8; margin-top: 2px; }
 .nav-btns { display: flex; gap: 8px; }
-.nav-btn { background: transparent; border: 1px solid #334155; color: #94a3b8; border-radius: 8px; padding: 6px 14px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.nav-btn {
+background: transparent;
+border: 1px solid #334155;
+color: #94a3b8;
+border-radius: 8px;
+padding: 6px 14px;
+font-size: 13px;
+font-weight: 600;
+cursor: pointer;
+}
 .nav-btn.active { background: #334155; color: #f1f5f9; }
+
+/* Content */
 .content { padding: 20px 16px; }
+
+/* Freq tabs */
 .freq-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
-.freq-tab { flex: 1; background: #1e293b; border: 1px solid #334155; color: #94a3b8; border-radius: 10px; padding: 10px 4px; font-size: 11px; font-weight: 700; cursor: pointer; position: relative; }
+.freq-tab {
+flex: 1;
+background: #1e293b;
+border: 1px solid #334155;
+color: #94a3b8;
+border-radius: 10px;
+padding: 10px 4px;
+font-size: 11px;
+font-weight: 700;
+cursor: pointer;
+position: relative;
+}
 .freq-tab.active { background: #0ea5e9; border-color: #0ea5e9; color: #fff; }
-.freq-done { position: absolute; top: -6px; right: -4px; background: #22c55e; color: #fff; border-radius: 50%; width: 16px; height: 16px; font-size: 9px; display: flex; align-items: center; justify-content: center; font-weight: 800; }
-.stats-bar { display: flex; gap: 10px; margin-bottom: 20px; background: #1e293b; border-radius: 12px; padding: 12px 16px; border: 1px solid #334155; }
+.freq-done {
+position: absolute; top: -6px; right: -4px;
+background: #22c55e; color: #fff;
+border-radius: 50%; width: 16px; height: 16px;
+font-size: 9px; display: flex; align-items: center; justify-content: center;
+font-weight: 800;
+}
+
+/* Stats bar */
+.stats-bar {
+display: flex; gap: 10px; margin-bottom: 20px;
+background: #1e293b; border-radius: 12px;
+padding: 12px 16px; border: 1px solid #334155;
+}
 .stat { flex: 1; text-align: center; }
 .stat-val { font-size: 22px; font-weight: 800; }
 .stat-label { font-size: 11px; color: #94a3b8; }
-.section-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+
+/* Section header */
+.section-head {
+display: flex; align-items: center; gap: 8px;
+margin-bottom: 10px;
+}
 .section-dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
 .section-label { font-size: 13px; font-weight: 700; color: #94a3b8; letter-spacing: 0.05em; }
 .section-group { margin-bottom: 24px; }
-.unit-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; }
+
+/* Unit card */
+.unit-card {
+background: #1e293b;
+border: 1px solid #334155;
+border-radius: 12px;
+padding: 14px 16px;
+margin-bottom: 10px;
+}
 .unit-card.warn { border-color: rgba(245,158,11,0.4); }
 .unit-card.ng { border-color: rgba(239,68,68,0.5); }
-.unit-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+
+.unit-top {
+display: flex; justify-content: space-between;
+align-items: center; margin-bottom: 10px;
+}
 .unit-left { display: flex; align-items: center; gap: 10px; }
-.unit-icon { font-size: 24px; line-height: 1; background: #273549; border-radius: 10px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border: 1px solid #334155; flex-shrink: 0; }
+.unit-icon {
+font-size: 24px; line-height: 1;
+background: #273549; border-radius: 10px;
+width: 44px; height: 44px;
+display: flex; align-items: center; justify-content: center;
+border: 1px solid #334155; flex-shrink: 0;
+}
 .unit-name { font-size: 15px; font-weight: 700; }
 .unit-target { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+
 .unit-bottom { display: flex; gap: 10px; align-items: flex-start; }
 .field-label { font-size: 11px; color: #94a3b8; margin-bottom: 4px; }
+
 .temp-wrap { display: flex; align-items: center; gap: 6px; }
-.temp-input { width: 72px; background: #273549; border: 1.5px solid #334155; border-radius: 8px; color: #f1f5f9; font-size: 16px; font-weight: 600; padding: 6px 10px; outline: none; text-align: center; }
+.temp-input {
+width: 72px; background: #273549;
+border: 1.5px solid #334155; border-radius: 8px;
+color: #f1f5f9; font-size: 16px; font-weight: 600;
+padding: 6px 10px; outline: none; text-align: center;
+}
 .temp-unit { color: #94a3b8; font-size: 12px; }
-.notes-input { width: 100%; background: #273549; border: 1px solid #334155; border-radius: 8px; color: #f1f5f9; font-size: 13px; padding: 7px 10px; outline: none; }
+
+.notes-input {
+width: 100%; background: #273549;
+border: 1px solid #334155; border-radius: 8px;
+color: #f1f5f9; font-size: 13px;
+padding: 7px 10px; outline: none;
+}
 .notes-wrap { flex: 1; }
-.badge { border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; white-space: nowrap; }
-.submit-box { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 16px; }
+
+/* Status badge */
+.badge {
+border-radius: 6px; padding: 2px 8px;
+font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+white-space: nowrap;
+}
+
+/* Submit area */
+.submit-box {
+background: #1e293b; border: 1px solid #334155;
+border-radius: 12px; padding: 16px;
+}
 .submit-label { font-size: 13px; color: #94a3b8; margin-bottom: 8px; }
-.name-input { width: 100%; background: #273549; border: 1px solid #334155; border-radius: 8px; color: #f1f5f9; font-size: 14px; padding: 10px 12px; outline: none; margin-bottom: 12px; }
-.submit-btn { width: 100%; border: none; border-radius: 10px; padding: 13px; font-size: 15px; font-weight: 800; cursor: pointer; transition: background 0.2s; }
+.name-input {
+width: 100%; background: #273549;
+border: 1px solid #334155; border-radius: 8px;
+color: #f1f5f9; font-size: 14px;
+padding: 10px 12px; outline: none; margin-bottom: 12px;
+}
+.submit-btn {
+width: 100%; border: none; border-radius: 10px;
+padding: 13px; font-size: 15px; font-weight: 800;
+cursor: pointer; transition: background 0.2s;
+}
 .submit-btn.ready { background: #0ea5e9; color: #fff; }
 .submit-btn.waiting { background: #1e3a4a; color: #475569; cursor: not-allowed; }
+
+/* History */
 .history-title { font-size: 16px; font-weight: 800; margin-bottom: 16px; }
-.history-empty { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 40px 20px; text-align: center; color: #94a3b8; }
-.history-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; margin-bottom: 14px; overflow: hidden; }
+.history-empty {
+background: #1e293b; border: 1px solid #334155;
+border-radius: 12px; padding: 40px 20px;
+text-align: center; color: #94a3b8;
+}
+.history-card {
+background: #1e293b; border: 1px solid #334155;
+border-radius: 12px; margin-bottom: 14px; overflow: hidden;
+}
 .history-card.warn { border-color: rgba(245,158,11,0.4); }
 .history-card.ng { border-color: rgba(239,68,68,0.4); }
-.history-head { padding: 12px 16px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
+.history-head {
+padding: 12px 16px; border-bottom: 1px solid #334155;
+display: flex; justify-content: space-between; align-items: center;
+flex-wrap: wrap; gap: 6px;
+}
 .history-freq { font-weight: 700; font-size: 14px; }
 .history-meta { font-size: 12px; color: #94a3b8; margin-left: 8px; }
 .history-badges { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
@@ -77,6 +208,7 @@ td:nth-child(2), td:nth-child(3) { text-align: center; }
 </style>
 </head>
 <body>
+
 <div class="header">
 <div>
 <div class="header-title">🌡 Temp Check</div>
@@ -87,8 +219,11 @@ td:nth-child(2), td:nth-child(3) { text-align: center; }
 <button class="nav-btn" id="btnHistory" onclick="switchView('history')">History</button>
 </div>
 </div>
+
 <div id="app"></div>
+
 <script>
+// ── Data ─────────────────────────────────────────────────────────────────────
 const UNITS = [
 { id:1, name:"Fridge — Grill", type:"fridge", icon:"🥩", min:0, max:5 },
 { id:2, name:"Fridge — Bench", type:"fridge", icon:"🧀", min:0, max:5 },
@@ -101,15 +236,20 @@ const FREQS = ["Morning (Pre-Open)", "Midday (Pre-Rush)", "Evening (Close)"];
 const TYPE_COLOR = { fridge:"#0ea5e9", freezer:"#6366f1" };
 const TYPE_LABEL = { fridge:"Fridges", freezer:"Freezers" };
 
+// ── State ─────────────────────────────────────────────────────────────────────
 let activeFreq = 0;
 let view = "check";
-let records = {};
+let records = {}; // { freqIdx: { unitId: { temp, note } } }
 let history = JSON.parse(localStorage.getItem("pp_history") || "[]");
 let submitted = {};
 FREQS.forEach((_,i) => records[i] = {});
 
-function saveHistory() { localStorage.setItem("pp_history", JSON.stringify(history)); }
+// ── Persist helpers ───────────────────────────────────────────────────────────
+function saveHistory() {
+localStorage.setItem("pp_history", JSON.stringify(history));
+}
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
 function getStatus(temp, min, max) {
 if (temp === "" || temp == null) return "empty";
 const t = parseFloat(temp);
@@ -118,24 +258,36 @@ if (t >= min && t <= max) return "ok";
 if (t > max + 3 || t < min - 3) return "ng";
 return "warn";
 }
+
 function badgeHTML(status) {
 if (status === "empty") return `<span style="color:#94a3b8;font-size:12px">—</span>`;
 const map = { ok:["OK","#22c55e"], warn:["CAUTION","#f59e0b"], ng:["ALERT","#ef4444"] };
 const [label, color] = map[status];
 return `<span class="badge" style="background:${color}22;color:${color};border:1px solid ${color}55">${label}</span>`;
 }
-function tempBorderColor(status) { return { ok:"#22c55e", warn:"#f59e0b", ng:"#ef4444", empty:"#334155" }[status]; }
-function rec(unitId) { return records[activeFreq][unitId] || {}; }
-function summary() {
-return UNITS.map(u => { const r = rec(u.id); return { ...u, temp: r.temp ?? "", note: r.note ?? "", status: getStatus(r.temp, u.min, u.max) }; });
+
+function tempBorderColor(status) {
+return { ok:"#22c55e", warn:"#f59e0b", ng:"#ef4444", empty:"#334155" }[status];
 }
 
+function rec(unitId) { return records[activeFreq][unitId] || {}; }
+
+function summary() {
+return UNITS.map(u => {
+const r = rec(u.id);
+return { ...u, temp: r.temp ?? "", note: r.note ?? "", status: getStatus(r.temp, u.min, u.max) };
+});
+}
+
+// ── View switching ────────────────────────────────────────────────────────────
 function switchView(v) {
 view = v;
 document.getElementById("btnCheck").classList.toggle("active", v === "check");
 document.getElementById("btnHistory").classList.toggle("active", v === "history");
 render();
 }
+
+// ── Render ────────────────────────────────────────────────────────────────────
 function render() {
 const app = document.getElementById("app");
 if (view === "check") app.innerHTML = renderCheck();
@@ -150,38 +302,107 @@ const warn = s.filter(x => x.status === "warn").length;
 const ng = s.filter(x => x.status === "ng").length;
 const pend = UNITS.length - ok - warn - ng;
 const allFilled = pend === 0;
+
 let html = `<div class="content">`;
+
+// Freq tabs
 html += `<div class="freq-tabs">`;
-FREQS.forEach((f, i) => { html += `<button class="freq-tab${i===activeFreq?" active":""}" onclick="setFreq(${i})">${f}${submitted[i] ? `<span class="freq-done">✓</span>` : ""}</button>`; });
+FREQS.forEach((f, i) => {
+html += `<button class="freq-tab${i===activeFreq?" active":""}" onclick="setFreq(${i})">
+${f}${submitted[i] ? `<span class="freq-done">✓</span>` : ""}
+</button>`;
+});
 html += `</div>`;
+
+// Stats
 html += `<div class="stats-bar">
 <div class="stat"><div class="stat-val" style="color:#22c55e">${ok}</div><div class="stat-label">OK</div></div>
 <div class="stat"><div class="stat-val" style="color:#f59e0b">${warn}</div><div class="stat-label">Caution</div></div>
 <div class="stat"><div class="stat-val" style="color:#ef4444">${ng}</div><div class="stat-label">Alert</div></div>
 <div class="stat"><div class="stat-val" style="color:#94a3b8">${pend}</div><div class="stat-label">Pending</div></div>
 </div>`;
+
+// Unit cards
 ["fridge","freezer"].forEach(type => {
 const color = TYPE_COLOR[type];
-html += `<div class="section-group"><div class="section-head"><span class="section-dot" style="background:${color}"></span><span class="section-label">${TYPE_LABEL[type]}</span></div>`;
+html += `<div class="section-group">
+<div class="section-head">
+<span class="section-dot" style="background:${color}"></span>
+<span class="section-label">${TYPE_LABEL[type]}</span>
+</div>`;
+
 UNITS.filter(u => u.type === type).forEach(u => {
-const r = rec(u.id); const st = getStatus(r.temp, u.min, u.max); const bc = tempBorderColor(st);
-html += `<div class="unit-card ${st==="ng"?"ng":st==="warn"?"warn":""}">
-<div class="unit-top"><div class="unit-left"><div class="unit-icon">${u.icon}</div><div><div class="unit-name">${u.name}</div><div class="unit-target">Target: ${u.min} to ${u.max}°C</div></div></div>${badgeHTML(st)}</div>
-<div class="unit-bottom"><div><div class="field-label">Temp</div><div class="temp-wrap"><input class="temp-input" type="number" step="0.1" id="temp-${u.id}" value="${r.temp ?? ""}" placeholder="--" style="border-color:${bc}" oninput="setTemp(${u.id}, this.value)"><span class="temp-unit">°C</span></div></div>
-<div class="notes-wrap"><div class="field-label">Notes</div><input class="notes-input" type="text" id="note-${u.id}" value="${(r.note||"").replace(/"/g,'&quot;')}" placeholder="Any issues to record" oninput="setNote(${u.id}, this.value)"></div></div></div>`;
+const r = rec(u.id);
+const st = getStatus(r.temp, u.min, u.max);
+const bc = tempBorderColor(st);
+html += `
+<div class="unit-card ${st==="ng"?"ng":st==="warn"?"warn":""}">
+<div class="unit-top">
+<div class="unit-left">
+<div class="unit-icon">${u.icon}</div>
+<div>
+<div class="unit-name">${u.name}</div>
+<div class="unit-target">Target: ${u.min} to ${u.max}°C</div>
+</div>
+</div>
+${badgeHTML(st)}
+</div>
+<div class="unit-bottom">
+<div>
+<div class="field-label">Temp</div>
+<div class="temp-wrap">
+<input class="temp-input" type="number" step="0.1"
+id="temp-${u.id}"
+value="${r.temp ?? ""}" placeholder="--"
+style="border-color:${bc}"
+oninput="setTemp(${u.id}, this.value)">
+<span class="temp-unit">°C</span>
+</div>
+</div>
+<div class="notes-wrap">
+<div class="field-label">Notes</div>
+<input class="notes-input" type="text"
+id="note-${u.id}"
+value="${(r.note||"").replace(/"/g,'&quot;')}"
+placeholder="Any issues to record"
+oninput="setNote(${u.id}, this.value)">
+</div>
+</div>
+</div>`;
 });
 html += `</div>`;
 });
+
+// Submit
 const savedName = localStorage.getItem("pp_checker_name") || "";
-html += `<div class="submit-box"><div class="submit-label">Checked by</div><input class="name-input" type="text" id="checkedBy" value="${savedName.replace(/"/g,'&quot;')}" placeholder="Enter your name"><button class="submit-btn ${allFilled?"ready":"waiting"}" onclick="handleSubmit()" ${allFilled?"":"disabled"}>${allFilled ? "✅ Save this check" : `📋 ${pend} unit${pend!==1?"s":""} still needed`}</button></div></div>`;
+html += `
+<div class="submit-box">
+<div class="submit-label">Checked by</div>
+<input class="name-input" type="text" id="checkedBy"
+value="${savedName.replace(/"/g,'&quot;')}" placeholder="Enter your name">
+<button class="submit-btn ${allFilled?"ready":"waiting"}" onclick="handleSubmit()" ${allFilled?"":"disabled"}>
+${allFilled ? "✅ Save this check" : `📋 ${pend} unit${pend!==1?"s":""} still needed`}
+</button>
+</div>
+</div>`;
+
 return html;
 }
 
 function renderHistory() {
+// Build list of months present in history
 const monthSet = new Set();
-history.forEach(e => { const d = new Date(e.date); if (!isNaN(d)) monthSet.add(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`); });
+history.forEach(e => {
+const d = new Date(e.date);
+if (!isNaN(d)) monthSet.add(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);
+});
 const months = [...monthSet].sort().reverse();
-const monthOptions = months.map(m => { const [y, mo] = m.split('-'); const label = new Date(+y, +mo-1, 1).toLocaleDateString("en-AU", { year:"numeric", month:"long" }); return `<option value="${m}">${label}</option>`; }).join('');
+const monthOptions = months.map(m => {
+const [y, mo] = m.split('-');
+const label = new Date(+y, +mo-1, 1).toLocaleDateString("en-AU", { year:"numeric", month:"long" });
+return `<option value="${m}">${label}</option>`;
+}).join('');
+
 let html = `<div class="content">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
 <div class="history-title" style="margin-bottom:0">Check History</div>
@@ -190,7 +411,16 @@ let html = `<div class="content">
 <button onclick="clearHistory()" style="background:#1e293b;border:1px solid #ef444455;color:#ef4444;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;">🗑 Clear All</button>
 </div>
 </div>
-${months.length > 0 ? `<div style="display:flex;gap:8px;align-items:center;margin-bottom:16px;flex-wrap:wrap;"><select id="dlMonth" style="flex:1;background:#1e293b;border:1px solid #334155;color:#f1f5f9;border-radius:8px;padding:8px 12px;font-size:13px;">${monthOptions}</select><button onclick="downloadMonthCSV()" style="background:#22c55e22;border:1px solid #22c55e55;color:#22c55e;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬇️ Download CSV</button></div>` : ''}`;
+${months.length > 0 ? `
+<div style="display:flex;gap:8px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">
+<select id="dlMonth" style="flex:1;background:#1e293b;border:1px solid #334155;color:#f1f5f9;border-radius:8px;padding:8px 12px;font-size:13px;">
+${monthOptions}
+</select>
+<button onclick="downloadMonthCSV()" style="background:#22c55e22;border:1px solid #22c55e55;color:#22c55e;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬇️ Month CSV</button>
+</div>
+<div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
+<button onclick="downloadWeekCSV()" style="background:#0ea5e922;border:1px solid #0ea5e955;color:#0ea5e9;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">⬇️ Last 7 Days CSV</button>
+</div>` : ''}`;
 if (history.length === 0) {
 html += `<div class="history-empty">No records yet</div>`;
 } else {
@@ -202,12 +432,37 @@ let overallBadge;
 if (hasNg) overallBadge = `<span class="badge" style="background:#ef444422;color:#ef4444;border:1px solid #ef444455">Alert</span>`;
 else if (hasWarn) overallBadge = `<span class="badge" style="background:#f59e0b22;color:#f59e0b;border:1px solid #f59e0b55">Caution</span>`;
 else overallBadge = `<span class="badge" style="background:#22c55e22;color:#22c55e;border:1px solid #22c55e55">All OK</span>`;
-html += `<div class="history-card ${cardCls}"><div class="history-head"><div><span class="history-freq">${entry.freq}</span><span class="history-meta">${entry.date} · ${entry.time}</span></div><div class="history-badges"><span class="history-by">by ${entry.checkedBy}</span>${overallBadge}</div></div><div class="history-body"><table><thead><tr><th>Unit</th><th>Temp</th><th>Status</th><th>Notes</th></tr></thead><tbody>`;
+
+html += `
+<div class="history-card ${cardCls}">
+<div class="history-head">
+<div>
+<span class="history-freq">${entry.freq}</span>
+<span class="history-meta">${entry.date} · ${entry.time}</span>
+</div>
+<div class="history-badges">
+<span class="history-by">by ${entry.checkedBy}</span>
+${overallBadge}
+</div>
+</div>
+<div class="history-body">
+<table>
+<thead><tr>
+<th>Unit</th><th>Temp</th><th>Status</th><th>Notes</th>
+</tr></thead>
+<tbody>`;
+
 entry.data.forEach(d => {
 const tc = TYPE_COLOR[d.type] || "#94a3b8";
 const vc = d.status==="ok"?"#22c55e":d.status==="warn"?"#f59e0b":d.status==="ng"?"#ef4444":"#94a3b8";
-html += `<tr><td><span style="margin-right:6px">${d.icon}</span><span style="color:${tc};font-weight:600">${d.name}</span></td><td style="font-weight:700;color:${vc}">${d.temp!==""?d.temp+"°C":"—"}</td><td>${badgeHTML(d.status)}</td><td style="color:#94a3b8;font-size:12px">${d.note||"—"}</td></tr>`;
+html += `<tr>
+<td><span style="margin-right:6px">${d.icon}</span><span style="color:${tc};font-weight:600">${d.name}</span></td>
+<td style="font-weight:700;color:${vc}">${d.temp!==""?d.temp+"°C":"—"}</td>
+<td>${badgeHTML(d.status)}</td>
+<td style="color:#94a3b8;font-size:12px">${d.note||"—"}</td>
+</tr>`;
 });
+
 html += `</tbody></table></div></div>`;
 });
 }
@@ -215,120 +470,235 @@ html += `</div>`;
 return html;
 }
 
+// ── Actions ───────────────────────────────────────────────────────────────────
 function setFreq(i) { activeFreq = i; render(); }
+
 function setTemp(unitId, val) {
 if (!records[activeFreq][unitId]) records[activeFreq][unitId] = {};
 records[activeFreq][unitId].temp = val;
+// update border color live without full re-render
 const u = UNITS.find(x => x.id === unitId);
 const st = getStatus(val, u.min, u.max);
 const input = document.getElementById(`temp-${unitId}`);
 if (input) input.style.borderColor = tempBorderColor(st);
+// update stats + submit button
 updateStatsAndButton();
 }
+
 function setNote(unitId, val) {
 if (!records[activeFreq][unitId]) records[activeFreq][unitId] = {};
 records[activeFreq][unitId].note = val;
 }
+
 function updateStatsAndButton() {
 const s = summary();
 const ok = s.filter(x => x.status === "ok").length;
 const warn = s.filter(x => x.status === "warn").length;
 const ng = s.filter(x => x.status === "ng").length;
 const pend = UNITS.length - ok - warn - ng;
+// update stat numbers
 const vals = document.querySelectorAll(".stat-val");
-if (vals.length === 4) { vals[0].textContent = ok; vals[1].textContent = warn; vals[2].textContent = ng; vals[3].textContent = pend; }
+if (vals.length === 4) {
+vals[0].textContent = ok;
+vals[1].textContent = warn;
+vals[2].textContent = ng;
+vals[3].textContent = pend;
+}
+// update button
 const btn = document.querySelector(".submit-btn");
 if (btn) {
-if (pend === 0) { btn.className = "submit-btn ready"; btn.disabled = false; btn.textContent = "✅ Save this check"; }
-else { btn.className = "submit-btn waiting"; btn.disabled = true; btn.textContent = `📋 ${pend} unit${pend!==1?"s":""} still needed`; }
+if (pend === 0) {
+btn.className = "submit-btn ready";
+btn.disabled = false;
+btn.textContent = "✅ Save this check";
+} else {
+btn.className = "submit-btn waiting";
+btn.disabled = true;
+btn.textContent = `📋 ${pend} unit${pend!==1?"s":""} still needed`;
 }
+}
+// update unit card borders
 UNITS.forEach(u => {
+const r = rec(u.id);
+const st = getStatus(r.temp, u.min, u.max);
+const card = document.querySelector(`.unit-card[data-id="${u.id}"]`);
+// badge update
 const badge = document.getElementById(`badge-${u.id}`);
-if (badge) badge.outerHTML = `<span id="badge-${u.id}">${badgeHTML(getStatus(rec(u.id).temp, u.min, u.max))}</span>`;
+if (badge) badge.outerHTML = `<span id="badge-${u.id}">${badgeHTML(st)}</span>`;
 });
 }
+
 function handleSubmit() {
 const nameInput = document.getElementById("checkedBy");
 const name = nameInput ? nameInput.value.trim() : "";
 if (!name) { alert("Please enter your name."); return; }
 localStorage.setItem("pp_checker_name", name);
+
 const now = new Date();
+const time = now.toLocaleTimeString("en-AU", { hour:"2-digit", minute:"2-digit" });
 const entry = {
 date: now.toLocaleDateString("en-AU", { weekday:"short", year:"numeric", month:"short", day:"numeric" }),
-freq: FREQS[activeFreq], checkedBy: name,
-time: now.toLocaleTimeString("en-AU", { hour:"2-digit", minute:"2-digit" }),
-data: UNITS.map(u => { const r = rec(u.id); return { name:u.name, icon:u.icon, type:u.type, temp: r.temp ?? "", note: r.note ?? "", status: getStatus(r.temp, u.min, u.max) }; }),
+freq: FREQS[activeFreq],
+checkedBy: name,
+time,
+data: UNITS.map(u => {
+const r = rec(u.id);
+return { name:u.name, icon:u.icon, type:u.type,
+temp: r.temp ?? "", note: r.note ?? "",
+status: getStatus(r.temp, u.min, u.max) };
+}),
 };
 history.unshift(entry);
 saveHistory();
 submitted[activeFreq] = true;
 switchView("history");
 }
-function attachListeners() {}
 
+function attachListeners() {} // event delegation via inline handlers
+
+// ── Dummy Data Generator ──────────────────────────────────────────────────────
 function generateDummyWeek() {
 if (!confirm("過去7日分のダミーデータを生成しますか？\nGenerate 1 week of dummy data?")) return;
-const names = ["Norio"];
+const names = ["NORIO"];
 const now = new Date();
 const newEntries = [];
+
 for (let day = 6; day >= 0; day--) {
 FREQS.forEach((freq, fi) => {
 const d = new Date(now);
 d.setDate(d.getDate() - day);
-d.setHours([7,12,17][fi], Math.floor(Math.random()*20), 0, 0);
+// Set realistic times per period
+const hours = [7, 12, 17];
+const mins = [Math.floor(Math.random()*20), Math.floor(Math.random()*20), Math.floor(Math.random()*20)];
+d.setHours(hours[fi], mins[fi], 0, 0);
+
 const data = UNITS.map(u => {
+// Generate temp within valid range (small chance of slightly out-of-range)
 const range = u.max - u.min;
 const roll = Math.random();
 let temp;
-if (roll < 0.95) temp = +(u.min + Math.random() * range).toFixed(1);
-else if (roll < 0.99) temp = +(u.max + 1 + Math.random() * 2).toFixed(1);
-else temp = +(u.max + 4 + Math.random() * 2).toFixed(1);
-return { name:u.name, icon:u.icon, type:u.type, temp:String(temp), note:"", status:getStatus(temp, u.min, u.max) };
+if (roll < 0.95) {
+// Normal: within range (95%)
+temp = +(u.min + Math.random() * range).toFixed(1);
+} else if (roll < 0.99) {
+// Slight warn just outside range (4%)
+temp = +(u.max + 1 + Math.random() * 2).toFixed(1);
+} else {
+// Alert well outside range (1%)
+temp = +(u.max + 4 + Math.random() * 2).toFixed(1);
+}
+const status = getStatus(temp, u.min, u.max);
+return { name:u.name, icon:u.icon, type:u.type, temp:String(temp), note:"", status };
 });
-newEntries.push({ date: d.toLocaleDateString("en-AU", { weekday:"short", year:"numeric", month:"short", day:"numeric" }), freq, checkedBy: names[Math.floor(Math.random()*names.length)], time: d.toLocaleTimeString("en-AU", { hour:"2-digit", minute:"2-digit" }), data });
+
+newEntries.push({
+date: d.toLocaleDateString("en-AU", { weekday:"short", year:"numeric", month:"short", day:"numeric" }),
+freq,
+checkedBy: names[Math.floor(Math.random() * names.length)],
+time: d.toLocaleTimeString("en-AU", { hour:"2-digit", minute:"2-digit" }),
+data,
+});
 });
 }
+
+// Add to front of history (newest first), keeping most recent on top
 history = [...newEntries.reverse(), ...history];
 saveHistory();
 render();
 }
+
 function clearHistory() {
 if (!confirm("全履歴を削除しますか？\nDelete all history?")) return;
 history = [];
 saveHistory();
 render();
 }
-function downloadMonthCSV() {
-const sel = document.getElementById("dlMonth");
-if (!sel) return;
-const [year, month] = sel.value.split('-').map(Number);
-const filtered = history.filter(e => { const d = new Date(e.date); return !isNaN(d) && d.getFullYear() === year && d.getMonth()+1 === month; });
-if (filtered.length === 0) { alert("No records for this month."); return; }
-const rows = [["Date","Period","Time","Checked By","Unit","Temp (°C)","Status","Notes"]];
-filtered.forEach(e => { e.data.forEach(d => { rows.push([e.date, e.freq, e.time, e.checkedBy, d.name, d.temp, d.status.toUpperCase(), d.note||""]); }); });
-const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");
-const blob = new Blob([csv], { type:"text/csv;charset=utf-8;" });
+
+// ── CSV Download ──────────────────────────────────────────────────────────────
+function buildCSV(filtered) {
+const rows = [["Date","Day","Period","Time","Checked By","Unit","Temp (°C)","Status","Notes"]];
+filtered.forEach(e => {
+e.data.forEach(d => {
+rows.push([
+e.date, "", e.freq, e.time, e.checkedBy,
+d.name, d.temp, d.status.toUpperCase(), d.note || ""
+]);
+});
+});
+return rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");
+}
+
+function triggerDownload(csv, filename) {
+const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
 const url = URL.createObjectURL(blob);
 const a = document.createElement("a");
 a.href = url;
-a.download = `TempCheck_${year}-${String(month).padStart(2,'0')}_PaddysPatties.csv`;
+a.download = filename;
 a.click();
 URL.revokeObjectURL(url);
 }
 
-document.getElementById("headerDate").textContent = "Paddy's Patties — " + new Date().toLocaleDateString("en-AU", { weekday:"short", year:"numeric", month:"short", day:"numeric" });
+function downloadMonthCSV() {
+const sel = document.getElementById("dlMonth");
+if (!sel) return;
+const [year, month] = sel.value.split('-').map(Number);
+
+const filtered = history.filter(e => {
+const d = new Date(e.date);
+return !isNaN(d) && d.getFullYear() === year && d.getMonth()+1 === month;
+});
+
+if (filtered.length === 0) { alert("No records for this month."); return; }
+
+const csv = buildCSV(filtered);
+triggerDownload(csv, `TempCheck_${year}-${String(month).padStart(2,'0')}_PaddysPatties.csv`);
+}
+
+function downloadWeekCSV() {
+const now = new Date();
+const cutoff = new Date(now);
+cutoff.setDate(cutoff.getDate() - 6);
+cutoff.setHours(0,0,0,0);
+
+const filtered = history.filter(e => {
+const d = new Date(e.date);
+return !isNaN(d) && d >= cutoff && d <= now;
+});
+
+if (filtered.length === 0) { alert("No records in the last 7 days."); return; }
+
+const csv = buildCSV(filtered);
+const fmt = d => `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+triggerDownload(csv, `TempCheck_${fmt(cutoff)}-${fmt(now)}_PaddysPatties.csv`);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+document.getElementById("headerDate").textContent =
+"Paddy's Patties — " +
+new Date().toLocaleDateString("en-AU", { weekday:"short", year:"numeric", month:"short", day:"numeric" });
+
+// Generate app icon dynamically and set as apple-touch-icon
 (function generateIcon() {
 const canvas = document.createElement("canvas");
 canvas.width = 180; canvas.height = 180;
 const ctx = canvas.getContext("2d");
+// Background
 const grad = ctx.createLinearGradient(0,0,180,180);
-grad.addColorStop(0, "#0ea5e9"); grad.addColorStop(1, "#6366f1");
+grad.addColorStop(0, "#0ea5e9");
+grad.addColorStop(1, "#6366f1");
 ctx.fillStyle = grad;
-ctx.beginPath(); ctx.roundRect(0,0,180,180,36); ctx.fill();
-ctx.font = "90px serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+ctx.beginPath();
+ctx.roundRect(0, 0, 180, 180, 36);
+ctx.fill();
+// Emoji
+ctx.font = "90px serif";
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
 ctx.fillText("🌡", 90, 95);
-document.getElementById("appicon").setAttribute("href", canvas.toDataURL("image/png"));
+const dataURL = canvas.toDataURL("image/png");
+document.getElementById("appicon").setAttribute("href", dataURL);
 })();
+
 render();
 </script>
 </body>
